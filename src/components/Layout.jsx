@@ -173,7 +173,7 @@ export default function Layout() {
             {isOffline && (
               <span className="offline-pill">
                 <WifiOff size={14} />
-                Mode hors-ligne (lecture du cache)
+                hors-ligne
               </span>
             )}
           </div>
