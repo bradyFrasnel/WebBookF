@@ -4,17 +4,92 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#4f46e5" />
+
+    <!-- SEO Principal -->
+    <title>WebBook — Gestionnaire personnel de sites web, favoris et notes</title>
     <meta
       name="description"
-      content="WebBook — Gestionnaire personnel de sites web, favoris, notes et catégories (PWA)"
+      content="WebBook est une application web progressive (PWA) permettant de centraliser, organiser par catégories, rechercher et retrouver rapidement tous vos sites web, favoris, notes personnelles et historiques de consultation."
     />
+    <meta
+      name="keywords"
+      content="WebBook, gestionnaire de sites web, favoris, bookmarks, notes personnelles, catégories de sites, PWA, organisation numérique"
+    />
+    <meta name="author" content="Brady Fresnel" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://webbookf.vercel.app/" />
+
+    <!-- Open Graph (Google, LinkedIn, WhatsApp, Facebook, Discord) -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="WebBook" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:url" content="https://webbookf.vercel.app/" />
+    <meta
+      property="og:title"
+      content="WebBook — Votre espace personnel pour centraliser et organiser tous vos sites web"
+    />
+    <meta
+      property="og:description"
+      content="Centralisez vos plateformes numériques, classez-les par catégories, marquez vos favoris, prenez des notes personnelles et accédez-y depuis n'importe quel appareil."
+    />
+    <meta
+      property="og:image"
+      content="https://webbookf.vercel.app/iconeWebBook.png"
+    />
+
+    <!-- Twitter / X Cards -->
+    <meta name="twitter:card" content="summary" />
+    <meta
+      name="twitter:title"
+      content="WebBook — Gestionnaire personnel de sites web (PWA)"
+    />
+    <meta
+      name="twitter:description"
+      content="Centralisez, organisez par catégories et retrouvez rapidement tous vos sites web, favoris et notes."
+    />
+    <meta
+      name="twitter:image"
+      content="https://webbookf.vercel.app/iconeWebBook.png"
+    />
+
+    <!-- Icônes & Manifest PWA -->
     <link rel="icon" type="image/png" href="/iconeWebBook.png" />
     <link rel="apple-touch-icon" href="/iconeWebBook.png" />
     <link rel="manifest" href="/manifest.json" />
-    <title>WebBook — Gestionnaire de sites web</title>
+
+    <!-- Données structurées Schema.org (JSON-LD) pour Google & Aperçu IA -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "WebBook",
+        "url": "https://webbookf.vercel.app/",
+        "image": "https://webbookf.vercel.app/iconeWebBook.png",
+        "description": "Application web progressive (PWA) permettant de répertorier, organiser par catégories, rechercher et retrouver rapidement ses sites Internet, favoris et notes personnelles.",
+        "applicationCategory": "ProductivityApplication",
+        "operatingSystem": "All",
+        "inLanguage": "fr-FR",
+        "author": {
+          "@type": "Person",
+          "name": "Brady Fresnel"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "EUR"
+        }
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <h1>WebBook — Gestionnaire personnel de sites web</h1>
+      <p>
+        Votre espace personnel pour centraliser, organiser par catégories et
+        retrouver rapidement tous vos sites web, favoris et notes personnelles.
+      </p>
+    </noscript>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

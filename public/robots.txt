@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://webbookf.vercel.app/sitemap.xml
