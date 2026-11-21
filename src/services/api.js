@@ -68,6 +68,23 @@ async function request(endpoint, options = {}) {
   }
 
   if (!response.ok) {
+    // Fallback sur le cache local PWA si la base de données cloud (Neon) est temporairement indisponible (502/503/504)
+    if (
+      method === "GET" &&
+      (response.status === 502 ||
+        response.status === 503 ||
+        response.status === 504)
+    ) {
+      const cached = localStorage.getItem(`${OFFLINE_CACHE_PREFIX}${endpoint}`);
+      if (cached) {
+        try {
+          return JSON.parse(cached);
+        } catch {
+          // ignore
+        }
+      }
+    }
+
     // Point 4 : Déconnexion automatique si le token JWT a expiré (401)
     if (response.status === 401 && endpoint !== "/api/auth/login") {
       setStoredToken(null);
