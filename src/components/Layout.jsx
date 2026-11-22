@@ -85,7 +85,7 @@ export default function Layout() {
           />
           <div>
             <span className="brand-title">WebBook</span>
-            <span className="brand-subtitle">Espace Personnel PWA</span>
+            <span className="brand-subtitle">Votre espace à vous !</span>
           </div>
           <button
             type="button"
