@@ -1,5 +1,5 @@
-const STATIC_CACHE = "webbook-static-v3";
-const API_CACHE = "webbook-api-v3";
+const STATIC_CACHE = "webbook-static-v4";
+const API_CACHE = "webbook-api-v4";
 
 const STATIC_ASSETS = [
   "/",
@@ -28,6 +28,12 @@ self.addEventListener("activate", (event) => {
     )
   );
   self.clients.claim();
+});
+
+self.addEventListener("message", (event) => {
+  if (event.data && event.data.type === "SKIP_WAITING") {
+    self.skipWaiting();
+  }
 });
 
 self.addEventListener("fetch", (event) => {
