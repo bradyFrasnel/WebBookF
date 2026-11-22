@@ -1,13 +1,18 @@
 import React, { useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
-import { BookMarked, Mail, Lock, User, ArrowRight } from "lucide-react";
+import { Link, Navigate, useNavigate, useSearchParams } from "react-router-dom";
+import { Mail, Lock, User, ArrowRight, Sun, Moon, ArrowLeft } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 
 export default function AuthPage() {
   const { user, login, register } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
-  const [mode, setMode] = useState("login"); // "login" | "register"
+  const [mode, setMode] = useState(() =>
+    searchParams.get("mode") === "register" ? "register" : "login"
+  );
   const [email, setEmail] = useState("");
   const [nomUtilisateur, setNomUtilisateur] = useState("");
   const [motDePasse, setMotDePasse] = useState("");
@@ -15,7 +20,7 @@ export default function AuthPage() {
   const [submitting, setSubmitting] = useState(false);
 
   if (user) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/sites" replace />;
   }
 
   const handleSubmit = async (e) => {
@@ -43,6 +48,22 @@ export default function AuthPage() {
 
   return (
     <div className="auth-page">
+      <div className="auth-top-actions">
+        <Link to="/" className="auth-back-link">
+          <ArrowLeft size={16} />
+          <span>Découvrir WebBook</span>
+        </Link>
+        <button
+          type="button"
+          className="btn-icon theme-toggle-btn"
+          onClick={toggleTheme}
+          title={isDark ? "Passer en mode clair" : "Passer en mode sombre"}
+          aria-label="Changer de thème"
+        >
+          {isDark ? <Sun size={19} /> : <Moon size={19} />}
+        </button>
+      </div>
+
       <div className="auth-card">
         <div className="auth-brand">
           <img

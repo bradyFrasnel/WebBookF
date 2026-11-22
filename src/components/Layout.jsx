@@ -13,11 +13,15 @@ import {
   X,
   Download,
   WifiOff,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { useTheme } from "../context/ThemeContext";
 
 export default function Layout() {
   const { user, logout } = useAuth();
+  const { isDark, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [isOffline, setIsOffline] = useState(!navigator.onLine);
@@ -170,6 +174,15 @@ export default function Layout() {
           </div>
 
           <div className="topbar-status">
+            <button
+              type="button"
+              className="btn-icon theme-toggle-btn"
+              onClick={toggleTheme}
+              title={isDark ? "Passer en mode clair" : "Passer en mode sombre"}
+              aria-label="Changer de thème"
+            >
+              {isDark ? <Sun size={19} /> : <Moon size={19} />}
+            </button>
             {isOffline && (
               <span className="offline-pill">
                 <WifiOff size={14} />
