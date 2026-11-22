@@ -209,7 +209,7 @@ export default function LandingPage() {
               className="brand-logo-img"
               style={{ width: "28px", height: "28px" }}
             />
-            <span>WebBook — Votre espace web personnel</span>
+            <span>WebBook - C'est enfin notre essor vers la felicité !</span>
           </div>
           <div className="landing-footer-copy">
             © {new Date().getFullYear()} WebBook. Tous droits réservés.
