@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Save, Lock, Trash2, User } from "lucide-react";
+import { Save, Lock, Trash2, User, ShieldCheck } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { profilApi } from "../services/api";
+import PrivacyModal from "../components/PrivacyModal";
 
 export default function ProfilPage() {
   const { user, setUser, logout } = useAuth();
@@ -14,6 +15,7 @@ export default function ProfilPage() {
   const [email, setEmail] = useState(user?.email || "");
   const [ancienMdp, setAncienMdp] = useState("");
   const [nouveauMdp, setNouveauMdp] = useState("");
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
 
   const [profilMsg, setProfilMsg] = useState("");
   const [profilErr, setProfilErr] = useState("");
@@ -187,6 +189,23 @@ export default function ProfilPage() {
         </div>
       </form>
 
+      {/* Confidentialité & Données */}
+      <div className="card-form">
+        <h3>Confidentialité & Données</h3>
+        <p className="muted-text">
+          Consultez à tout moment les engagements de WebBook concernant la
+          protection de votre vie privée et de vos données personnelles.
+        </p>
+        <button
+          type="button"
+          className="btn btn-outline"
+          onClick={() => setShowPrivacyModal(true)}
+        >
+          <ShieldCheck size={16} />
+          <span>Consulter la politique de confidentialité</span>
+        </button>
+      </div>
+
       {/* Zone de danger */}
       <div className="card-form danger-zone">
         <h3>Zone de danger</h3>
@@ -203,6 +222,11 @@ export default function ProfilPage() {
           <span>Supprimer définitivement mon compte</span>
         </button>
       </div>
+
+      <PrivacyModal
+        isOpen={showPrivacyModal}
+        onClose={() => setShowPrivacyModal(false)}
+      />
     </div>
   );
 }

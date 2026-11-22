@@ -3,6 +3,7 @@ import { Link, Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import { Mail, Lock, User, ArrowRight, Sun, Moon, ArrowLeft } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
+import PrivacyModal from "../components/PrivacyModal";
 
 export default function AuthPage() {
   const { user, login, register } = useAuth();
@@ -16,6 +17,8 @@ export default function AuthPage() {
   const [email, setEmail] = useState("");
   const [nomUtilisateur, setNomUtilisateur] = useState("");
   const [motDePasse, setMotDePasse] = useState("");
+  const [privacyAccepted, setPrivacyAccepted] = useState(false);
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
   const [error, setError] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -26,6 +29,14 @@ export default function AuthPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+
+    if (mode === "register" && !privacyAccepted) {
+      setError(
+        "Veuillez accepter la politique de confidentialité pour créer votre compte."
+      );
+      return;
+    }
+
     setSubmitting(true);
 
     try {
@@ -128,7 +139,7 @@ export default function AuthPage() {
                 id="email"
                 type="email"
                 required
-                placeholder="vous@exemple.com"
+                placeholder="bradymouk@exemple.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -153,6 +164,34 @@ export default function AuthPage() {
             </div>
           </div>
 
+          {mode === "register" && (
+            <div className="privacy-consent-group">
+              <label className="privacy-checkbox-label" htmlFor="privacy_consent">
+                <input
+                  id="privacy_consent"
+                  type="checkbox"
+                  required
+                  checked={privacyAccepted}
+                  onChange={(e) => setPrivacyAccepted(e.target.checked)}
+                />
+                <span>
+                  J'ai lu et j'accepte la{" "}
+                  <button
+                    type="button"
+                    className="privacy-inline-link"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      setShowPrivacyModal(true);
+                    }}
+                  >
+                    politique de confidentialité
+                  </button>{" "}
+                  de WebBook.
+                </span>
+              </label>
+            </div>
+          )}
+
           <button
             type="submit"
             className="btn btn-primary btn-block btn-lg"
@@ -169,6 +208,11 @@ export default function AuthPage() {
           </button>
         </form>
       </div>
+
+      <PrivacyModal
+        isOpen={showPrivacyModal}
+        onClose={() => setShowPrivacyModal(false)}
+      />
     </div>
   );
 }

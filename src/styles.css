@@ -2098,3 +2098,244 @@ a {
     gap: 12px;
   }
 }
+
+/* ==========================================================================
+   POLITIQUE DE CONFIDENTIALITÉ & MODALE RESPONSIVE
+   ========================================================================== */
+
+/* Case à cocher de consentement (AuthPage) */
+.privacy-consent-group {
+  margin: 4px 0 6px;
+  background: rgba(99, 102, 241, 0.05);
+  border: 1px solid var(--border-color);
+  padding: 10px 14px;
+  border-radius: 10px;
+}
+
+[data-theme="dark"] .privacy-consent-group {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.privacy-checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  color: var(--text-main);
+  line-height: 1.45;
+  user-select: none;
+}
+
+.privacy-checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: var(--primary);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.privacy-inline-link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: inherit;
+  font-family: inherit;
+  display: inline;
+  transition: opacity 0.15s ease;
+}
+
+.privacy-inline-link:hover {
+  opacity: 0.85;
+}
+
+/* Modale de Confidentialité */
+.privacy-modal-overlay {
+  z-index: 9999;
+  backdrop-filter: blur(4px);
+  padding: 16px;
+}
+
+.privacy-modal-card {
+  width: min(600px, 94vw);
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  animation: pwaSlideUpFade 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.privacy-modal-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  background: var(--bg-card);
+}
+
+.privacy-header-identity {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.privacy-icon-badge {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: rgba(99, 102, 241, 0.12);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.privacy-header-identity h2 {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.25;
+}
+
+.privacy-subtitle {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  display: block;
+}
+
+.privacy-modal-body {
+  padding: 22px 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--text-main);
+}
+
+.privacy-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.privacy-section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.privacy-section-icon {
+  color: var(--primary);
+  flex-shrink: 0;
+}
+
+.privacy-section-title h3 {
+  font-size: 0.98rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.privacy-section p {
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.privacy-section ul {
+  list-style: disc;
+  padding-left: 20px;
+  color: var(--text-muted);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.privacy-modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid var(--border-color);
+  background: var(--bg-card);
+}
+
+/* Liens dans le footer de LandingPage */
+.landing-footer-links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.landing-footer-link {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.84rem;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.landing-footer-link:hover {
+  color: var(--primary);
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   AMÉLIORATIONS RESPONSIVE PARTICULIÈRES (MOBILE & PETITS ÉCRANS)
+   ========================================================================== */
+@media (max-width: 640px) {
+  .privacy-modal-header {
+    padding: 16px 18px;
+  }
+  .privacy-modal-body {
+    padding: 18px 18px;
+    gap: 16px;
+  }
+  .privacy-modal-footer {
+    padding: 14px 18px;
+  }
+  .privacy-header-identity h2 {
+    font-size: 1.05rem;
+  }
+  .landing-footer-links {
+    margin-top: 4px;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 380px) {
+  .privacy-modal-header {
+    padding: 14px 12px;
+  }
+  .privacy-icon-badge {
+    width: 34px;
+    height: 34px;
+  }
+  .privacy-icon-badge svg {
+    width: 18px;
+    height: 18px;
+  }
+  .privacy-modal-body {
+    padding: 14px 12px;
+    font-size: 0.85rem;
+  }
+  .privacy-checkbox-label {
+    font-size: 0.8rem;
+  }
+  .landing-preview-card {
+    padding: 16px;
+  }
+}

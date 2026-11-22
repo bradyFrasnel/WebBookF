@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, Navigate } from "react-router-dom";
 import {
   Smartphone,
@@ -13,10 +13,12 @@ import {
 } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
+import PrivacyModal from "../components/PrivacyModal";
 
 export default function LandingPage() {
   const { user } = useAuth();
   const { theme, toggleTheme, isDark } = useTheme();
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false);
 
   // Si l'utilisateur est déjà connecté, il accède directement à ses sites
   if (user) {
@@ -209,13 +211,29 @@ export default function LandingPage() {
               className="brand-logo-img"
               style={{ width: "28px", height: "28px" }}
             />
-            <span>WebBook - C'est enfin notre essor vers la felicité !</span>
+            <span>WebBook — Votre espace web personnel</span>
           </div>
+
+          <div className="landing-footer-links">
+            <button
+              type="button"
+              className="landing-footer-link"
+              onClick={() => setShowPrivacyModal(true)}
+            >
+              Politique de confidentialité
+            </button>
+          </div>
+
           <div className="landing-footer-copy">
             © {new Date().getFullYear()} WebBook. Tous droits réservés.
           </div>
         </div>
       </footer>
+
+      <PrivacyModal
+        isOpen={showPrivacyModal}
+        onClose={() => setShowPrivacyModal(false)}
+      />
     </div>
   );
 }
