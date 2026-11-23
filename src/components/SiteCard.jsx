@@ -74,9 +74,20 @@ export default function SiteCard({
             <h3 className="site-card-name" title={site.nom}>
               {site.nom}
             </h3>
-            <span className="site-card-domain" title={site.url}>
-              {domaine}
-            </span>
+            <div className="site-card-domain-row">
+              <span className="site-card-domain" title={site.url}>
+                {domaine}
+              </span>
+              <button
+                type="button"
+                className={`btn-copy-inline ${copied ? "copied" : ""}`}
+                onClick={handleCopyLink}
+                title={copied ? "Lien copié dans le presse-papiers !" : "Copier le lien"}
+                aria-label="Copier le lien"
+              >
+                {copied ? <Check size={14} /> : <Link2 size={14} />}
+              </button>
+            </div>
           </div>
         </div>
 
@@ -122,15 +133,6 @@ export default function SiteCard({
         </button>
 
         <div className="site-card-secondary-actions">
-          <button
-            type="button"
-            className={`btn-icon btn-copy-link ${copied ? "copied" : ""}`}
-            onClick={handleCopyLink}
-            title={copied ? "Lien copié dans le presse-papiers !" : "Copier le lien"}
-            aria-label="Copier le lien"
-          >
-            {copied ? <Check size={16} /> : <Link2 size={16} />}
-          </button>
           <Link
             to={`/sites/${site.id_site}/modifier`}
             className="btn-icon"
