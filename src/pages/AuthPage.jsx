@@ -59,23 +59,24 @@ export default function AuthPage() {
 
   return (
     <div className="auth-page">
-      <div className="auth-top-actions">
-        <Link to="/" className="auth-back-link">
-          <ArrowLeft size={16} />
-          <span>Découvrir WebBook</span>
-        </Link>
-        <button
-          type="button"
-          className="btn-icon theme-toggle-btn"
-          onClick={toggleTheme}
-          title={isDark ? "Passer en mode clair" : "Passer en mode sombre"}
-          aria-label="Changer de thème"
-        >
-          {isDark ? <Sun size={19} /> : <Moon size={19} />}
-        </button>
-      </div>
+      <div className="auth-container">
+        <div className="auth-top-actions">
+          <Link to="/" className="auth-back-link">
+            <ArrowLeft size={16} />
+            <span>Découvrir WebBook</span>
+          </Link>
+          <button
+            type="button"
+            className="btn-icon theme-toggle-btn"
+            onClick={toggleTheme}
+            title={isDark ? "Passer en mode clair" : "Passer en mode sombre"}
+            aria-label="Changer de thème"
+          >
+            {isDark ? <Sun size={19} /> : <Moon size={19} />}
+          </button>
+        </div>
 
-      <div className="auth-card">
+        <div className="auth-card">
         <div className="auth-brand">
           <img
             src="/iconeWebBook.png"
@@ -208,11 +209,12 @@ export default function AuthPage() {
           </button>
         </form>
       </div>
-
-      <PrivacyModal
-        isOpen={showPrivacyModal}
-        onClose={() => setShowPrivacyModal(false)}
-      />
     </div>
+
+    <PrivacyModal
+      isOpen={showPrivacyModal}
+      onClose={() => setShowPrivacyModal(false)}
+    />
+  </div>
   );
 }
