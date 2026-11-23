@@ -143,6 +143,16 @@ export const authApi = {
       body: JSON.stringify(payload),
     }),
   me: () => request("/api/auth/me"),
+  forgotPassword: (email) =>
+    request("/api/auth/mot-de-passe-oublie", {
+      method: "POST",
+      body: JSON.stringify({ email }),
+    }),
+  resetPassword: (payload) =>
+    request("/api/auth/reinitialiser-mot-de-passe", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    }),
 };
 
 export const profilApi = {

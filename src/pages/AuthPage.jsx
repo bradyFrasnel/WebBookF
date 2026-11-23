@@ -1,8 +1,20 @@
 import React, { useState } from "react";
 import { Link, Navigate, useNavigate, useSearchParams } from "react-router-dom";
-import { Mail, Lock, User, ArrowRight, Sun, Moon, ArrowLeft } from "lucide-react";
+import {
+  Mail,
+  Lock,
+  User,
+  ArrowRight,
+  Sun,
+  Moon,
+  ArrowLeft,
+  Eye,
+  EyeOff,
+  CheckCircle2,
+} from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
+import { authApi } from "../services/api";
 import PrivacyModal from "../components/PrivacyModal";
 
 export default function AuthPage() {
@@ -17,9 +29,11 @@ export default function AuthPage() {
   const [email, setEmail] = useState("");
   const [nomUtilisateur, setNomUtilisateur] = useState("");
   const [motDePasse, setMotDePasse] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [privacyAccepted, setPrivacyAccepted] = useState(false);
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
   const [error, setError] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   if (user) {
@@ -29,6 +43,23 @@ export default function AuthPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+    setSuccessMsg("");
+
+    if (mode === "forgot") {
+      setSubmitting(true);
+      try {
+        const res = await authApi.forgotPassword(email);
+        setSuccessMsg(
+          res?.message ||
+            "Si un compte existe pour cet email, un lien de réinitialisation vous a été envoyé."
+        );
+      } catch (err) {
+        setError(err.message || "Erreur lors de l'envoi de l'email.");
+      } finally {
+        setSubmitting(false);
+      }
+      return;
+    }
 
     if (mode === "register" && !privacyAccepted) {
       setError(
@@ -77,138 +108,202 @@ export default function AuthPage() {
         </div>
 
         <div className="auth-card">
-        <div className="auth-brand">
-          <img
-            src="/iconeWebBook.png"
-            alt="WebBook"
-            className="brand-logo-img brand-logo-lg"
-          />
-          <h1>WebBook</h1>
-          <p>
-            Votre espace personnel pour centraliser, organiser et retrouver tous
-            vos sites web et favoris.
-          </p>
-        </div>
+          <div className="auth-brand">
+            <img
+              src="/iconeWebBook.png"
+              alt="WebBook"
+              className="brand-logo-img brand-logo-lg"
+            />
+            <h1>WebBook</h1>
+            <p>
+              {mode === "forgot"
+                ? "Réinitialisation de votre mot de passe"
+                : "Votre espace personnel pour centraliser, organiser et retrouver tous vos sites web et favoris."}
+            </p>
+          </div>
 
-        <div className="auth-tabs">
-          <button
-            type="button"
-            className={`auth-tab ${mode === "login" ? "active" : ""}`}
-            onClick={() => {
-              setMode("login");
-              setError("");
-            }}
-          >
-            Connexion
-          </button>
-          <button
-            type="button"
-            className={`auth-tab ${mode === "register" ? "active" : ""}`}
-            onClick={() => {
-              setMode("register");
-              setError("");
-            }}
-          >
-            Créer un compte
-          </button>
-        </div>
+          {mode !== "forgot" ? (
+            <div className="auth-tabs">
+              <button
+                type="button"
+                className={`auth-tab ${mode === "login" ? "active" : ""}`}
+                onClick={() => {
+                  setMode("login");
+                  setError("");
+                  setSuccessMsg("");
+                }}
+              >
+                Connexion
+              </button>
+              <button
+                type="button"
+                className={`auth-tab ${mode === "register" ? "active" : ""}`}
+                onClick={() => {
+                  setMode("register");
+                  setError("");
+                  setSuccessMsg("");
+                }}
+              >
+                Créer un compte
+              </button>
+            </div>
+          ) : (
+            <div className="auth-forgot-intro">
+              <p>
+                Entrez votre adresse email ci-dessous. Nous vous enverrons un lien
+                sécurisé pour définir un nouveau mot de passe.
+              </p>
+            </div>
+          )}
 
-        {error && <div className="alert alert-error">{error}</div>}
+          {error && <div className="alert alert-error">{error}</div>}
+          {successMsg && (
+            <div className="alert alert-success">
+              <CheckCircle2 size={18} style={{ marginRight: 8, flexShrink: 0 }} />
+              <span>{successMsg}</span>
+            </div>
+          )}
 
-        <form onSubmit={handleSubmit} className="auth-form">
-          {mode === "register" && (
+          <form onSubmit={handleSubmit} className="auth-form">
+            {mode === "register" && (
+              <div className="form-group">
+                <label htmlFor="nom_utilisateur">Nom ou pseudo (optionnel)</label>
+                <div className="input-with-icon">
+                  <User size={18} />
+                  <input
+                    id="nom_utilisateur"
+                    type="text"
+                    placeholder="Ex: Brady"
+                    value={nomUtilisateur}
+                    onChange={(e) => setNomUtilisateur(e.target.value)}
+                  />
+                </div>
+              </div>
+            )}
+
             <div className="form-group">
-              <label htmlFor="nom_utilisateur">Nom ou pseudo (optionnel)</label>
+              <label htmlFor="email">Adresse email *</label>
               <div className="input-with-icon">
-                <User size={18} />
+                <Mail size={18} />
                 <input
-                  id="nom_utilisateur"
-                  type="text"
-                  placeholder="Ex: Brady"
-                  value={nomUtilisateur}
-                  onChange={(e) => setNomUtilisateur(e.target.value)}
+                  id="email"
+                  type="email"
+                  required
+                  placeholder="bradymouk@exemple.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
             </div>
-          )}
 
-          <div className="form-group">
-            <label htmlFor="email">Adresse email *</label>
-            <div className="input-with-icon">
-              <Mail size={18} />
-              <input
-                id="email"
-                type="email"
-                required
-                placeholder="bradymouk@exemple.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="mot_de_passe">
-              Mot de passe * {mode === "register" && "(8 caractères min.)"}
-            </label>
-            <div className="input-with-icon">
-              <Lock size={18} />
-              <input
-                id="mot_de_passe"
-                type="password"
-                required
-                minLength={mode === "register" ? 8 : 1}
-                placeholder="••••••••"
-                value={motDePasse}
-                onChange={(e) => setMotDePasse(e.target.value)}
-              />
-            </div>
-          </div>
-
-          {mode === "register" && (
-            <div className="privacy-consent-group">
-              <label className="privacy-checkbox-label" htmlFor="privacy_consent">
-                <input
-                  id="privacy_consent"
-                  type="checkbox"
-                  required
-                  checked={privacyAccepted}
-                  onChange={(e) => setPrivacyAccepted(e.target.checked)}
-                />
-                <span>
-                  J'ai lu et j'accepte la{" "}
+            {mode !== "forgot" && (
+              <div className="form-group">
+                <label htmlFor="mot_de_passe">
+                  Mot de passe * {mode === "register" && "(8 caractères min.)"}
+                </label>
+                <div className="input-with-icon">
+                  <Lock size={18} />
+                  <input
+                    id="mot_de_passe"
+                    type={showPassword ? "text" : "password"}
+                    required
+                    minLength={mode === "register" ? 8 : 1}
+                    placeholder="••••••••"
+                    value={motDePasse}
+                    onChange={(e) => setMotDePasse(e.target.value)}
+                  />
                   <button
                     type="button"
-                    className="privacy-inline-link"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      setShowPrivacyModal(true);
-                    }}
+                    className="btn-password-toggle"
+                    onClick={() => setShowPassword(!showPassword)}
+                    title={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+                    aria-label="Afficher ou masquer le mot de passe"
                   >
-                    politique de confidentialité
-                  </button>{" "}
-                  de WebBook.
-                </span>
-              </label>
-            </div>
-          )}
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
 
-          <button
-            type="submit"
-            className="btn btn-primary btn-block btn-lg"
-            disabled={submitting}
-          >
-            <span>
-              {submitting
-                ? "Chargement..."
-                : mode === "login"
-                  ? "Se connecter"
-                  : "Créer mon espace WebBook"}
-            </span>
-            <ArrowRight size={18} />
-          </button>
-        </form>
-      </div>
+                {mode === "login" && (
+                  <div className="auth-forgot-row">
+                    <button
+                      type="button"
+                      className="auth-forgot-link"
+                      onClick={() => {
+                        setMode("forgot");
+                        setError("");
+                        setSuccessMsg("");
+                      }}
+                    >
+                      Mot de passe oublié ?
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {mode === "register" && (
+              <div className="privacy-consent-group">
+                <label className="privacy-checkbox-label" htmlFor="privacy_consent">
+                  <input
+                    id="privacy_consent"
+                    type="checkbox"
+                    required
+                    checked={privacyAccepted}
+                    onChange={(e) => setPrivacyAccepted(e.target.checked)}
+                  />
+                  <span>
+                    J'ai lu et j'accepte la{" "}
+                    <button
+                      type="button"
+                      className="privacy-inline-link"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setShowPrivacyModal(true);
+                      }}
+                    >
+                      politique de confidentialité
+                    </button>{" "}
+                    de WebBook.
+                  </span>
+                </label>
+              </div>
+            )}
+
+            <button
+              type="submit"
+              className="btn btn-primary btn-block btn-lg"
+              disabled={submitting}
+            >
+              <span>
+                {submitting
+                  ? "Chargement..."
+                  : mode === "login"
+                    ? "Se connecter"
+                    : mode === "register"
+                      ? "Créer mon espace WebBook"
+                      : "Envoyer le lien de réinitialisation"}
+              </span>
+              <ArrowRight size={18} />
+            </button>
+
+            {mode === "forgot" && (
+              <div style={{ textAlign: "center", marginTop: 8 }}>
+                <button
+                  type="button"
+                  className="auth-back-to-login-btn"
+                  onClick={() => {
+                    setMode("login");
+                    setError("");
+                    setSuccessMsg("");
+                  }}
+                >
+                  <ArrowLeft size={15} />
+                  <span>Retour à la connexion</span>
+                </button>
+              </div>
+            )}
+          </form>
+        </div>
     </div>
 
     <PrivacyModal

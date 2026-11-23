@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Save, Lock, Trash2, User, ShieldCheck } from "lucide-react";
+import { Save, Lock, Trash2, User, ShieldCheck, Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { profilApi } from "../services/api";
 import PrivacyModal from "../components/PrivacyModal";
@@ -15,6 +15,8 @@ export default function ProfilPage() {
   const [email, setEmail] = useState(user?.email || "");
   const [ancienMdp, setAncienMdp] = useState("");
   const [nouveauMdp, setNouveauMdp] = useState("");
+  const [showAncienMdp, setShowAncienMdp] = useState(false);
+  const [showNouveauMdp, setShowNouveauMdp] = useState(false);
   const [showPrivacyModal, setShowPrivacyModal] = useState(false);
 
   const [profilMsg, setProfilMsg] = useState("");
@@ -152,27 +154,51 @@ export default function ProfilPage() {
 
         <div className="form-group">
           <label htmlFor="ancien_mdp">Mot de passe actuel *</label>
-          <input
-            id="ancien_mdp"
-            type="password"
-            required
-            value={ancienMdp}
-            onChange={(e) => setAncienMdp(e.target.value)}
-          />
+          <div className="input-with-icon">
+            <Lock size={18} />
+            <input
+              id="ancien_mdp"
+              type={showAncienMdp ? "text" : "password"}
+              required
+              value={ancienMdp}
+              onChange={(e) => setAncienMdp(e.target.value)}
+            />
+            <button
+              type="button"
+              className="btn-password-toggle"
+              onClick={() => setShowAncienMdp(!showAncienMdp)}
+              title={showAncienMdp ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+              aria-label="Afficher ou masquer le mot de passe"
+            >
+              {showAncienMdp ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
         </div>
 
         <div className="form-group">
           <label htmlFor="nouveau_mdp">
             Nouveau mot de passe * (8 caractères min.)
           </label>
-          <input
-            id="nouveau_mdp"
-            type="password"
-            required
-            minLength={8}
-            value={nouveauMdp}
-            onChange={(e) => setNouveauMdp(e.target.value)}
-          />
+          <div className="input-with-icon">
+            <Lock size={18} />
+            <input
+              id="nouveau_mdp"
+              type={showNouveauMdp ? "text" : "password"}
+              required
+              minLength={8}
+              value={nouveauMdp}
+              onChange={(e) => setNouveauMdp(e.target.value)}
+            />
+            <button
+              type="button"
+              className="btn-password-toggle"
+              onClick={() => setShowNouveauMdp(!showNouveauMdp)}
+              title={showNouveauMdp ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+              aria-label="Afficher ou masquer le mot de passe"
+            >
+              {showNouveauMdp ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
         </div>
 
         <div className="form-actions">

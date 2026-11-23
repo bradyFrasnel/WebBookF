@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   ExternalLink,
@@ -8,6 +8,8 @@ import {
   Eye,
   StickyNote,
   Folder,
+  Link2,
+  Check,
 } from "lucide-react";
 import SiteIcon from "./SiteIcon";
 import { sitesApi } from "../services/api";
@@ -18,6 +20,28 @@ export default function SiteCard({
   onDelete,
   onVisited,
 }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyLink = async (e) => {
+    e.stopPropagation();
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(site.url);
+      } else {
+        const textarea = document.createElement("textarea");
+        textarea.value = site.url;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+      }
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // ignore
+    }
+  };
+
   const handleOpenSite = async () => {
     if (!/^https?:\/\//i.test(site.url)) return;
     window.open(site.url, "_blank", "noopener,noreferrer");
@@ -98,6 +122,15 @@ export default function SiteCard({
         </button>
 
         <div className="site-card-secondary-actions">
+          <button
+            type="button"
+            className={`btn-icon btn-copy-link ${copied ? "copied" : ""}`}
+            onClick={handleCopyLink}
+            title={copied ? "Lien copié dans le presse-papiers !" : "Copier le lien"}
+            aria-label="Copier le lien"
+          >
+            {copied ? <Check size={16} /> : <Link2 size={16} />}
+          </button>
           <Link
             to={`/sites/${site.id_site}/modifier`}
             className="btn-icon"

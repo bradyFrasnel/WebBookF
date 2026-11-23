@@ -6,6 +6,7 @@ import Layout from "./components/Layout";
 import PwaUpdateToast from "./components/PwaUpdateToast";
 import LandingPage from "./pages/LandingPage";
 import AuthPage from "./pages/AuthPage";
+import ResetPasswordPage from "./pages/ResetPasswordPage";
 import DashboardPage from "./pages/DashboardPage";
 import SitesPage from "./pages/SitesPage";
 import SiteFormPage from "./pages/SiteFormPage";
@@ -37,6 +38,7 @@ export default function App() {
           <Routes>
             <Route path="/presentation" element={<LandingPage />} />
             <Route path="/login" element={<AuthPage />} />
+            <Route path="/reinitialiser-mot-de-passe" element={<ResetPasswordPage />} />
             <Route path="/" element={<HomeRouteWrapper />}>
               <Route index element={<SitesPage />} />
               <Route path="sites" element={<SitesPage />} />
