@@ -1,7 +1,11 @@
 {
   "rewrites": [
     {
-      "source": "/((?!robots\\.txt|sitemap\\.xml|manifest\\.json|sw\\.js|icon-192\\.png|icon-512\\.png|iconeWebBook\\.png).*)",
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    },
+    {
+      "source": "/((?!api/|robots\\.txt|sitemap\\.xml|manifest\\.json|sw\\.js|icon-192\\.png|icon-512\\.png|iconeWebBook\\.png).*)",
       "destination": "/index.html"
     }
   ],

@@ -47,11 +47,12 @@ export default function AuthPage() {
 
     if (mode === "forgot") {
       setSubmitting(true);
+      const emailClean = email.trim().toLowerCase();
       try {
-        const res = await authApi.forgotPassword(email);
+        const res = await authApi.forgotPassword(emailClean);
         setSuccessMsg(
           res?.message ||
-            "Si un compte existe pour cet email, un lien de réinitialisation vous a été envoyé."
+            `Un lien vous a été envoyé à l'adresse ${emailClean}.`
         );
       } catch (err) {
         setError(err.message || "Erreur lors de l'envoi de l'email.");
@@ -149,10 +150,7 @@ export default function AuthPage() {
             </div>
           ) : (
             <div className="auth-forgot-intro">
-              <p>
-                Entrez votre adresse email ci-dessous. Nous vous enverrons un lien
-                sécurisé pour définir un nouveau mot de passe.
-              </p>
+              <p>Entrez l'adresse mail rattachée à votre compte.</p>
             </div>
           )}
 
