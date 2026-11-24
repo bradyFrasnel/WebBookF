@@ -96,6 +96,7 @@ export default function SiteIcon({ nom, url, iconeUrl, size = 42 }) {
       alt={`Icône ${nom}`}
       className="site-icon-img"
       style={{ width: size, height: size }}
+      referrerPolicy="no-referrer"
       onError={() => setFailed(true)}
       loading="lazy"
     />

@@ -1,5 +1,5 @@
-const STATIC_CACHE = "webbook-static-v9";
-const API_CACHE = "webbook-api-v9";
+const STATIC_CACHE = "webbook-static-v10";
+const API_CACHE = "webbook-api-v10";
 
 const STATIC_ASSETS = [
   "/",
@@ -42,7 +42,15 @@ self.addEventListener("fetch", (event) => {
 
   const url = new URL(request.url);
 
-  if (url.pathname.startsWith("/api/")) {
+  // Laisse le navigateur charger directement les ressources externes (favicons Google, icônes distantes, etc.)
+  const isSameOrigin = url.origin === self.location.origin;
+  const isBackendApi = url.pathname.startsWith("/api/") && !isSameOrigin;
+
+  if (!isSameOrigin && !isBackendApi) {
+    return;
+  }
+
+  if (isBackendApi) {
     event.respondWith(
       fetch(request)
         .then((response) => {
@@ -57,10 +65,15 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
+  // Ne jamais intercepter les routes serverless internes /api/* du même domaine
+  if (url.pathname.startsWith("/api/")) {
+    return;
+  }
+
   event.respondWith(
     fetch(request)
       .then((response) => {
-        if (response.ok && url.origin === self.location.origin) {
+        if (response.ok) {
           const clone = response.clone();
           caches.open(STATIC_CACHE).then((cache) => cache.put(request, clone));
         }
