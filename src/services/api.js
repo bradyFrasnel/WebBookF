@@ -102,6 +102,8 @@ async function request(endpoint, options = {}) {
     }
     const error = new Error(message);
     error.status = response.status;
+    const retryHeader = response.headers.get("Retry-After");
+    error.retryAfter = Number(data?.retry_after || retryHeader || 0) || 0;
     throw error;
   }
 

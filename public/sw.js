@@ -1,5 +1,5 @@
-const STATIC_CACHE = "webbook-static-v8";
-const API_CACHE = "webbook-api-v8";
+const STATIC_CACHE = "webbook-static-v9";
+const API_CACHE = "webbook-api-v9";
 
 const STATIC_ASSETS = [
   "/",

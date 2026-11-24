@@ -389,6 +389,21 @@ a {
   cursor: not-allowed;
 }
 
+.btn-locked:disabled {
+  opacity: 1;
+  background: #94a3b8 !important;
+  border-color: #94a3b8 !important;
+  color: #f8fafc !important;
+  box-shadow: none !important;
+  cursor: not-allowed;
+}
+
+[data-theme="dark"] .btn-locked:disabled {
+  background: #334155 !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: #94a3b8 !important;
+}
+
 .btn-primary {
   background: var(--primary);
   color: #ffffff;

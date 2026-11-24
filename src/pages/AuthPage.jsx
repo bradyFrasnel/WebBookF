@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, Navigate, useNavigate, useSearchParams } from "react-router-dom";
 import {
   Mail,
@@ -16,6 +16,35 @@ import { useAuth } from "../context/AuthContext";
 import { useTheme } from "../context/ThemeContext";
 import { authApi } from "../services/api";
 import PrivacyModal from "../components/PrivacyModal";
+
+const MAX_LOGIN_ATTEMPTS = 5;
+const LOGIN_LOCKOUT_SECONDS = 300; // 5 minutes
+const LOCK_UNTIL_KEY = "webbook_login_lock_until";
+const FAILED_COUNT_KEY = "webbook_login_failed_count";
+const FAILED_WINDOW_KEY = "webbook_login_first_fail_ts";
+
+function getRemainingLockSeconds() {
+  try {
+    const until = Number(localStorage.getItem(LOCK_UNTIL_KEY) || 0);
+    if (until > Date.now()) {
+      return Math.ceil((until - Date.now()) / 1000);
+    }
+    if (until > 0) {
+      localStorage.removeItem(LOCK_UNTIL_KEY);
+      localStorage.removeItem(FAILED_COUNT_KEY);
+      localStorage.removeItem(FAILED_WINDOW_KEY);
+    }
+  } catch {
+    // ignore
+  }
+  return 0;
+}
+
+function formatCountdown(totalSec) {
+  const mins = Math.floor(totalSec / 60);
+  const secs = totalSec % 60;
+  return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+}
 
 export default function AuthPage() {
   const { user, login, register } = useAuth();
@@ -35,13 +64,43 @@ export default function AuthPage() {
   const [error, setError] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  const [lockSecondsLeft, setLockSecondsLeft] = useState(() =>
+    getRemainingLockSeconds()
+  );
+
+  useEffect(() => {
+    if (lockSecondsLeft <= 0) return undefined;
+    const timer = setInterval(() => {
+      const rem = getRemainingLockSeconds();
+      setLockSecondsLeft(rem);
+      if (rem === 0) {
+        setError("");
+      }
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [lockSecondsLeft]);
+
+  const activateLockout = (durationSec = LOGIN_LOCKOUT_SECONDS) => {
+    const safeSec = Math.max(1, durationSec);
+    try {
+      localStorage.setItem(LOCK_UNTIL_KEY, String(Date.now() + safeSec * 1000));
+      localStorage.removeItem(FAILED_COUNT_KEY);
+      localStorage.removeItem(FAILED_WINDOW_KEY);
+    } catch {
+      // ignore
+    }
+    setLockSecondsLeft(safeSec);
+  };
 
   if (user) {
     return <Navigate to="/sites" replace />;
   }
 
+  const isLoginLocked = mode === "login" && lockSecondsLeft > 0;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (isLoginLocked) return;
     setError("");
     setSuccessMsg("");
 
@@ -71,6 +130,13 @@ export default function AuthPage() {
     try {
       if (mode === "login") {
         await login(email, motDePasse);
+        try {
+          localStorage.removeItem(LOCK_UNTIL_KEY);
+          localStorage.removeItem(FAILED_COUNT_KEY);
+          localStorage.removeItem(FAILED_WINDOW_KEY);
+        } catch {
+          // ignore
+        }
       } else {
         await register({
           email,
@@ -80,7 +146,49 @@ export default function AuthPage() {
       }
       navigate("/");
     } catch (err) {
-      setError(err.message || "Erreur d'authentification.");
+      if (mode === "login") {
+        if (err.status === 429) {
+          const waitSec =
+            err.retryAfter > 0 ? err.retryAfter : LOGIN_LOCKOUT_SECONDS;
+          activateLockout(waitSec);
+          setError(
+            err.message ||
+              "Trop de tentatives infructueuses (5/5). Veuillez patienter 5 minutes avant de réessayer."
+          );
+        } else {
+          let count = 1;
+          try {
+            const firstTs = Number(
+              localStorage.getItem(FAILED_WINDOW_KEY) || 0
+            );
+            const now = Date.now();
+            if (
+              firstTs > 0 &&
+              now - firstTs < LOGIN_LOCKOUT_SECONDS * 1000
+            ) {
+              count =
+                Number(localStorage.getItem(FAILED_COUNT_KEY) || 0) + 1;
+            } else {
+              localStorage.setItem(FAILED_WINDOW_KEY, String(now));
+              count = 1;
+            }
+
+            if (count >= MAX_LOGIN_ATTEMPTS) {
+              activateLockout(LOGIN_LOCKOUT_SECONDS);
+              setError(
+                "Trop de tentatives infructueuses (5/5). Veuillez patienter 5 minutes avant de réessayer."
+              );
+            } else {
+              localStorage.setItem(FAILED_COUNT_KEY, String(count));
+              setError(err.message || "Email ou mot de passe incorrect.");
+            }
+          } catch {
+            setError(err.message || "Email ou mot de passe incorrect.");
+          }
+        }
+      } else {
+        setError(err.message || "Erreur d'authentification.");
+      }
     } finally {
       setSubmitting(false);
     }
@@ -269,19 +377,23 @@ export default function AuthPage() {
 
             <button
               type="submit"
-              className="btn btn-primary btn-block btn-lg"
-              disabled={submitting}
+              className={`btn btn-primary btn-block btn-lg ${
+                isLoginLocked ? "btn-locked" : ""
+              }`}
+              disabled={submitting || isLoginLocked}
             >
               <span>
                 {submitting
                   ? "Chargement..."
                   : mode === "login"
-                    ? "Se connecter"
+                    ? isLoginLocked
+                      ? `Réessayer dans ${formatCountdown(lockSecondsLeft)}`
+                      : "Se connecter"
                     : mode === "register"
                       ? "Créer mon espace WebBook"
                       : "Envoyer le lien de réinitialisation"}
               </span>
-              <ArrowRight size={18} />
+              {!isLoginLocked && <ArrowRight size={18} />}
             </button>
 
             {mode === "forgot" && (
