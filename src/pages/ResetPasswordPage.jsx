@@ -106,6 +106,7 @@ export default function ResetPasswordPage() {
                     type={showPassword ? "text" : "password"}
                     required
                     minLength={8}
+                    maxLength={128}
                     placeholder="••••••••"
                     value={nouveauMdp}
                     onChange={(e) => setNouveauMdp(e.target.value)}
@@ -133,6 +134,7 @@ export default function ResetPasswordPage() {
                     type={showPassword ? "text" : "password"}
                     required
                     minLength={8}
+                    maxLength={128}
                     placeholder="••••••••"
                     value={confirmerMdp}
                     onChange={(e) => setConfirmerMdp(e.target.value)}

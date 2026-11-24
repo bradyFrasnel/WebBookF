@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Trash2, ExternalLink, Clock } from "lucide-react";
 import { historiqueApi, sitesApi } from "../services/api";
 import SiteIcon from "../components/SiteIcon";
+import { openSafeExternalUrl } from "../utils/urlSecurity";
 
 export default function HistoriquePage() {
   const [items, setItems] = useState([]);
@@ -26,8 +27,7 @@ export default function HistoriquePage() {
   }, []);
 
   const handleReopen = async (site) => {
-    if (!site) return;
-    window.open(site.url, "_blank", "noopener,noreferrer");
+    if (!site || !openSafeExternalUrl(site.url)) return;
     try {
       await sitesApi.recordVisit(site.id_site);
       await loadHistorique();

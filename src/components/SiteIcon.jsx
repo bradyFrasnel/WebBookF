@@ -28,6 +28,9 @@ function resolveSafeFaviconSrc(iconeUrl, siteUrl) {
   if (iconeUrl) {
     try {
       const parsedIcon = new URL(iconeUrl);
+      if (parsedIcon.protocol !== "http:" && parsedIcon.protocol !== "https:") {
+        return null;
+      }
       // Si c'est une URL Google Favicons pointant vers un domaine local/IP (ex: domain=127.0.0.1), on l'ignore pour éviter une 404
       if (parsedIcon.hostname.includes("google.com") && parsedIcon.searchParams.has("domain")) {
         const targetDomain = parsedIcon.searchParams.get("domain");

@@ -10,6 +10,7 @@ import {
   Save,
 } from "lucide-react";
 import { notesApi, sitesApi } from "../services/api";
+import { isSafeHttpUrl } from "../utils/urlSecurity";
 
 export default function NotesPage() {
   const [notes, setNotes] = useState([]);
@@ -191,6 +192,7 @@ export default function NotesPage() {
               id="note_contenu"
               rows={5}
               required
+              maxLength={20000}
               placeholder="Rédigez votre note ici..."
               value={contenu}
               onChange={(e) => setContenu(e.target.value)}
@@ -285,7 +287,7 @@ export default function NotesPage() {
                 </button>
               </div>
 
-              {note.site && (
+              {note.site && isSafeHttpUrl(note.site.url) && (
                 <a
                   href={note.site.url}
                   target="_blank"

@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import SiteIcon from "./SiteIcon";
 import { sitesApi } from "../services/api";
+import { openSafeExternalUrl } from "../utils/urlSecurity";
 
 export default function SiteCard({
   site,
@@ -43,8 +44,7 @@ export default function SiteCard({
   };
 
   const handleOpenSite = async () => {
-    if (!/^https?:\/\//i.test(site.url)) return;
-    window.open(site.url, "_blank", "noopener,noreferrer");
+    if (!openSafeExternalUrl(site.url)) return;
     try {
       const updated = await sitesApi.recordVisit(site.id_site);
       if (onVisited) onVisited(updated);

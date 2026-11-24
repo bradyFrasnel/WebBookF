@@ -168,6 +168,7 @@ export default function AuthPage() {
                   <input
                     id="nom_utilisateur"
                     type="text"
+                    maxLength={100}
                     placeholder="Ex: Brady"
                     value={nomUtilisateur}
                     onChange={(e) => setNomUtilisateur(e.target.value)}
@@ -184,6 +185,7 @@ export default function AuthPage() {
                   id="email"
                   type="email"
                   required
+                  maxLength={254}
                   placeholder="bradymouk@exemple.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -203,6 +205,7 @@ export default function AuthPage() {
                     type={showPassword ? "text" : "password"}
                     required
                     minLength={mode === "register" ? 8 : 1}
+                    maxLength={128}
                     placeholder="••••••••"
                     value={motDePasse}
                     onChange={(e) => setMotDePasse(e.target.value)}

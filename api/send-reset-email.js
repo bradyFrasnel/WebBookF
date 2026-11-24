@@ -275,12 +275,43 @@ async function sendViaSmtp({
   }
 }
 
+const ipHits = new Map();
+
+function checkRelayRateLimit(ip, maxReqs = 8, windowMs = 300_000) {
+  const now = Date.now();
+  const list = (ipHits.get(ip) || []).filter((ts) => now - ts < windowMs);
+  if (list.length >= maxReqs) {
+    ipHits.set(ip, list);
+    return false;
+  }
+  list.push(now);
+  ipHits.set(ip, list);
+  return true;
+}
+
 export default async function handler(req, res) {
+  if (typeof res.setHeader === "function") {
+    res.setHeader("Cache-Control", "no-store");
+    res.setHeader("X-Content-Type-Options", "nosniff");
+  }
+
   if (req.method !== "POST") {
     return res.status(405).json({ detail: "Méthode non autorisée." });
   }
 
+  const clientIp =
+    (req.headers?.["x-forwarded-for"] || "").split(",")[0].trim() || "unknown";
+  if (!checkRelayRateLimit(clientIp)) {
+    return res
+      .status(429)
+      .json({ detail: "Trop de requêtes d'envoi d'email. Veuillez patienter." });
+  }
+
   try {
+    const rawStr = typeof req.body === "string" ? req.body : JSON.stringify(req.body || {});
+    if (rawStr.length > 16384) {
+      return res.status(413).json({ detail: "Charge utile trop volumineuse." });
+    }
     const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body || {};
 
     const toEmail = String(body.to_email || "").trim().toLowerCase();

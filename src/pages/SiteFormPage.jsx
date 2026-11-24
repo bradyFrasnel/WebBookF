@@ -128,6 +128,7 @@ export default function SiteFormPage() {
             id="url"
             type="text"
             required
+            maxLength={2048}
             placeholder="Ex: https://github.com"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
@@ -172,6 +173,7 @@ export default function SiteFormPage() {
           <input
             id="icone_url"
             type="text"
+            maxLength={2048}
             placeholder="https://exemple.com/logo.png"
             value={iconeUrl}
             onChange={(e) => setIconeUrl(e.target.value)}
