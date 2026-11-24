@@ -49,11 +49,8 @@ export default function AuthPage() {
       setSubmitting(true);
       const emailClean = email.trim().toLowerCase();
       try {
-        const res = await authApi.forgotPassword(emailClean);
-        setSuccessMsg(
-          res?.message ||
-            `Un lien vous a été envoyé à l'adresse ${emailClean}.`
-        );
+        await authApi.forgotPassword(emailClean);
+        setSuccessMsg(`Un lien vous a été envoyé à l'adresse ${emailClean}.`);
       } catch (err) {
         setError(err.message || "Erreur lors de l'envoi de l'email.");
       } finally {
